@@ -46,6 +46,23 @@ const NOTIFY_CONFIG = {
    embed a shared album on a static site, so we read your own
    /photos folder instead. See the README for details.
 --------------------------------------------------------- */
+/* ---------------------------------------------------------
+   SPOTIFY  —  the "Songs for Our Date" playlist
+   ---------------------------------------------------------
+   ⚠️ The embed only works for a PUBLIC playlist. Personalized
+   Spotify playlists (On Repeat, Discover Weekly, Daily Mix,
+   Your Top Songs — links with a "pt=" parameter) are tied to
+   your account and cannot be embedded for other people.
+
+   To use your own: open the playlist in Spotify, make sure it's
+   Public (… menu), then Share → Copy link, and paste just the
+   playlist id (the part after /playlist/) below.
+--------------------------------------------------------- */
+const SPOTIFY = {
+  playlistId: "37i9dQZF1FwPLooITr6Gri",
+  shareUrl: "https://open.spotify.com/playlist/37i9dQZF1FwPLooITr6Gri",
+};
+
 const GALLERY_CONFIG = {
   folder: "photos",
   // Auto-detected from the github.io URL; these are used as a fallback:
@@ -547,6 +564,121 @@ function wireRequestModal() {
   if (location.hash.toLowerCase() === "#request") openModal();
 }
 
+/* ---- spotify playlist embed ---- */
+function initPlaylist() {
+  const frame = document.getElementById("playlistFrame");
+  if (!frame) return;
+  const id = (SPOTIFY && SPOTIFY.playlistId) || "";
+  if (!id) return;
+  frame.innerHTML =
+    `<iframe title="Our anniversary playlist" style="border-radius:14px"` +
+    ` src="https://open.spotify.com/embed/playlist/${encodeURIComponent(id)}?utm_source=generator&theme=0"` +
+    ` width="100%" height="380" frameborder="0" allowfullscreen` +
+    ` allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"` +
+    ` loading="lazy"></iframe>`;
+  const link = document.getElementById("playlistLink");
+  if (link) link.href = SPOTIFY.shareUrl || `https://open.spotify.com/playlist/${id}`;
+}
+
+/* ---- fake retro hit counter ---- */
+function initHitCounter() {
+  const el = document.getElementById("hitCounter");
+  if (!el) return;
+  const KEY = "askyVisits";
+  let n = parseInt(localStorage.getItem(KEY) || "", 10);
+  if (!Number.isFinite(n)) n = 1330 + Math.floor(Math.random() * 370); // believable starting point
+  n += 1;
+  try { localStorage.setItem(KEY, String(n)); } catch (e) {}
+  const pad = (v) => String(v).padStart(7, "0");
+  let cur = Math.max(0, n - 25);
+  const step = () => {
+    cur += 1;
+    el.textContent = pad(Math.min(cur, n));
+    if (cur < n) requestAnimationFrame(step);
+  };
+  step();
+}
+
+/* ---- toggleable chiptune background tune (Web Audio, no files) ---- */
+function initMusic() {
+  const btn = document.getElementById("musicToggle");
+  const icon = document.getElementById("musicIcon");
+  const label = document.getElementById("musicLabel");
+  if (!btn) return;
+
+  const NOTES = { C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.0, A4: 440.0, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, R: 0 };
+  const melody = [
+    ["C4", 1], ["C4", 1], ["G4", 1], ["G4", 1], ["A4", 1], ["A4", 1], ["G4", 2],
+    ["F4", 1], ["F4", 1], ["E4", 1], ["E4", 1], ["D4", 1], ["D4", 1], ["C4", 2],
+    ["G4", 1], ["G4", 1], ["F4", 1], ["F4", 1], ["E4", 1], ["E4", 1], ["D4", 2],
+    ["C4", 1], ["G4", 1], ["E4", 1], ["G4", 1], ["A4", 1], ["G4", 1], ["C4", 2],
+  ];
+  const beat = 0.32;
+
+  let ctx = null, master = null, timer = null, cancelled = false, playing = false, i = 0;
+
+  const blip = (freq, t0, dur, type, peak) => {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(peak, t0 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur * 0.9);
+    osc.connect(g);
+    g.connect(master);
+    osc.start(t0);
+    osc.stop(t0 + dur);
+  };
+
+  const schedule = () => {
+    if (cancelled) return;
+    const [name, beats] = melody[i % melody.length];
+    const dur = beats * beat;
+    const f = NOTES[name];
+    if (f > 0) {
+      const t0 = ctx.currentTime + 0.02;
+      blip(f, t0, dur, "square", 0.9);   // melody
+      blip(f / 2, t0, dur, "triangle", 0.5); // soft bass
+    }
+    i++;
+    timer = setTimeout(schedule, dur * 1000);
+  };
+
+  const start = () => {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    master = ctx.createGain();
+    master.gain.value = 0.16;
+    master.connect(ctx.destination);
+    cancelled = false;
+    i = 0;
+    schedule();
+  };
+  const stop = () => {
+    cancelled = true;
+    clearTimeout(timer);
+    if (master) { try { master.disconnect(); } catch (e) {} master = null; }
+  };
+
+  btn.addEventListener("click", () => {
+    playing = !playing;
+    if (playing) {
+      start();
+      icon.textContent = "🎵";
+      label.textContent = "Music: on";
+      btn.classList.add("is-on");
+      btn.setAttribute("aria-pressed", "true");
+    } else {
+      stop();
+      icon.textContent = "🔇";
+      label.textContent = "Music: off";
+      btn.classList.remove("is-on");
+      btn.setAttribute("aria-pressed", "false");
+    }
+  });
+}
+
 /* ---- go ---- */
 document.addEventListener("DOMContentLoaded", () => {
   renderTimeline();
@@ -557,4 +689,7 @@ document.addEventListener("DOMContentLoaded", () => {
   wireWindowButtons();
   wireRequestModal();
   initCarousel();
+  initPlaylist();
+  initHitCounter();
+  initMusic();
 });

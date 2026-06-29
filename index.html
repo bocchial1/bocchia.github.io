@@ -92,15 +92,49 @@
         <h3 class="section-heading">⌚ Today's Itinerary ⌚</h3>
         <ol class="timeline" id="timeline"></ol>
 
+        <!-- Spotify playlist -->
+        <h3 class="section-heading">🎵 Songs for Our Date 🎵</h3>
+        <div class="playlist">
+          <div class="playlist__frame" id="playlistFrame"></div>
+          <p class="playlist__hint">
+            ♫ press play for the drive to Royal Oak ♫ &nbsp;·&nbsp;
+            <a class="playlist__link" id="playlistLink" href="https://open.spotify.com/playlist/37i9dQZF1FwPLooITr6Gri" target="_blank" rel="noopener">Open in Spotify ↗</a>
+          </p>
+        </div>
+
+        <!-- Y2K under-construction GIF vibes -->
+        <div class="construction" aria-hidden="true">
+          <span class="construction__sign">🚧</span>
+          <div class="construction__bar"><span>♥ this page is always under construction with love ♥</span></div>
+          <span class="construction__sign">🚧</span>
+        </div>
+
         <!-- guestbook-y footer -->
         <footer class="footer">
           <div class="footer__hearts">♡ ♥ ♡ ♥ ♡</div>
           <p>Made with <span class="beat">💖</span> for 5 wonderful years.</p>
           <p class="footer__small">© 2026 Alex &amp; Sky &nbsp;•&nbsp; sealed with a kiss 💋</p>
+
+          <!-- cute animated GIF-style stickers -->
+          <div class="stickers" aria-hidden="true">
+            <span class="sticker sticker--spin">🌐</span>
+            <span class="sticker sticker--bounce">💌</span>
+            <span class="sticker sticker--spin2">⭐</span>
+            <span class="sticker sticker--beat">💖</span>
+            <span class="sticker sticker--bounce2">🐾</span>
+          </div>
+
           <div class="badges" aria-hidden="true">
             <span class="badge">Best viewed in <b>love</b> 800x600</span>
             <span class="badge badge--blink">★ NEW ★</span>
+            <span class="badge badge--rainbow">♥ Sky + Alex 4ever ♥</span>
             <span class="badge">Twiggy approved 🐾</span>
+          </div>
+
+          <!-- fake retro hit counter -->
+          <div class="hitcounter" aria-label="Visitor counter">
+            <span class="hitcounter__label">You are visitor no.</span>
+            <span class="hitcounter__digits" id="hitCounter">0000000</span>
           </div>
         </footer>
       </div>
@@ -113,11 +147,15 @@
   </main>
 
   <!-- XP-ish taskbar -->
-  <div class="taskbar" aria-hidden="true">
+  <div class="taskbar">
     <button class="start-btn" id="startBtn" type="button"><span class="start-logo">♥</span> Start</button>
-    <div class="taskbar__task">💖 AnniversaryDate.exe</div>
+    <div class="taskbar__task" aria-hidden="true">💖 AnniversaryDate.exe</div>
     <div class="taskbar__tray">
-      <span class="tray-clock" id="trayClock">--:--</span>
+      <button class="tray-music" id="musicToggle" type="button" title="Play the cute background tune" aria-pressed="false">
+        <span class="tray-music__icon" id="musicIcon" aria-hidden="true">🔇</span>
+        <span class="tray-music__label" id="musicLabel">Music: off</span>
+      </button>
+      <span class="tray-clock" id="trayClock" aria-hidden="true">--:--</span>
     </div>
   </div>
 

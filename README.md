@@ -6,6 +6,9 @@ A cute Y2K / Windows XP–styled GitHub Pages site showing the agenda for
 - Blue theme for **Alex**, pink theme for **Sky**, with bubbly 2000s lettering.
 - Live timeline of the day's itinerary (pottery class, dinner, dessert & more).
 - Floating hearts, a faux XP window + taskbar, and a live clock for the full nostalgic vibe.
+- Auto-loading **photo carousel**, a **"Request a Change"** dialog, and an embedded **Spotify playlist**.
+- Extra Y2K flair: a fake **visitor hit counter**, an **"under construction"** banner,
+  animated GIF-style stickers, and a **toggleable chiptune** background tune (taskbar 🔇/🎵 button).
 
 ## Files
 
