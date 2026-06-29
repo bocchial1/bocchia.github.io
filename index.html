@@ -66,7 +66,27 @@
               <span class="time-now" id="timeNow">--:--:--</span>
             </div>
           </div>
+
+          <div class="hero__actions">
+            <button class="request-btn" type="button" data-open-request>
+              💌 Request a Change
+            </button>
+          </div>
         </header>
+
+        <!-- Photo carousel -->
+        <h3 class="section-heading">📸 Us Through the Years 📸</h3>
+        <section class="carousel" id="carousel" aria-roledescription="carousel" aria-label="Photos of Alex and Sky">
+          <div class="carousel__frame">
+            <div class="carousel__track" id="carouselTrack"></div>
+
+            <button class="carousel__nav carousel__nav--prev" id="prevSlide" type="button" aria-label="Previous photo">‹</button>
+            <button class="carousel__nav carousel__nav--next" id="nextSlide" type="button" aria-label="Next photo">›</button>
+
+            <div class="carousel__caption" id="carouselCaption" aria-live="polite"></div>
+          </div>
+          <div class="carousel__dots" id="carouselDots" role="tablist" aria-label="Choose photo"></div>
+        </section>
 
         <!-- Itinerary timeline -->
         <h3 class="section-heading">⌚ Today's Itinerary ⌚</h3>
@@ -98,6 +118,56 @@
     <div class="taskbar__task">💖 AnniversaryDate.exe</div>
     <div class="taskbar__tray">
       <span class="tray-clock" id="trayClock">--:--</span>
+    </div>
+  </div>
+
+  <!-- floating request-a-change button -->
+  <button class="fab-request" type="button" data-open-request title="Sky, request a change!">
+    <span class="fab-request__icon">💌</span>
+    <span class="fab-request__text">Request a Change</span>
+  </button>
+
+  <!-- Request-a-change dialog (XP style) -->
+  <div class="modal-overlay" id="requestModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
+      <div class="modal__titlebar">
+        <div class="modal__title">
+          <span aria-hidden="true">💌</span>
+          <span id="reqTitle">Request a Change</span>
+        </div>
+        <button class="winbtn winbtn--close" type="button" data-close-request title="Close">✕</button>
+      </div>
+      <form class="modal__body" id="requestForm">
+        <p class="modal__intro">Hi Sky! 💗 Want to tweak the plan? Tell Alex what to change and he'll get a little ping.</p>
+
+        <label class="field">
+          <span>Who's asking?</span>
+          <select name="requester" id="requester">
+            <option value="Sky">💗 Sky</option>
+            <option value="Alex">💙 Alex</option>
+            <option value="Twiggy">🐶 Twiggy</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Which part? <small>(optional)</small></span>
+          <select name="activity" id="activitySelect">
+            <option value="">— anything / general —</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>What would you like to change?</span>
+          <textarea name="message" id="requestMessage" rows="4" required
+            placeholder="e.g. Can we do dessert before dinner? 🍨"></textarea>
+        </label>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" data-close-request>Maybe later</button>
+          <button type="submit" class="btn btn--send">Send to Alex 💙</button>
+        </div>
+        <p class="modal__status" id="requestStatus" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </div>
 
