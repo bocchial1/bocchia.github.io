@@ -631,21 +631,26 @@ function initWeather() {
     if (dressEl) dressEl.innerHTML = dressCode(hi, pop);
   };
 
-  // graceful fallback (typical late-June Royal Oak)
-  const fallback = () => render(82, 63, 20, "⛅", "Partly cloudy (seasonal estimate)");
+  // Show a sensible value immediately (typical late-June Royal Oak) so the
+  // widget never sticks on "—", then upgrade to the live forecast if it loads.
+  render(82, 63, 20, "⛅", "Partly cloudy (seasonal estimate)");
 
-  fetch(url, { cache: "no-store" })
+  const ctrl = "AbortController" in window ? new AbortController() : null;
+  const timeout = ctrl ? setTimeout(() => ctrl.abort(), 7000) : null;
+
+  fetch(url, { cache: "no-store", signal: ctrl ? ctrl.signal : undefined })
     .then((r) => (r.ok ? r.json() : Promise.reject()))
     .then((d) => {
+      if (timeout) clearTimeout(timeout);
       const day = d && d.daily;
-      if (!day || !day.time || !day.time.length) return fallback();
+      if (!day || !day.time || !day.time.length) return;
       const hi = day.temperature_2m_max[0];
       const lo = day.temperature_2m_min[0];
       const pop = day.precipitation_probability_max ? day.precipitation_probability_max[0] : 0;
       const [icon, cond] = codeInfo(day.weather_code[0]);
       render(hi, lo, pop == null ? 0 : pop, icon, cond);
     })
-    .catch(fallback);
+    .catch(() => { if (timeout) clearTimeout(timeout); /* keep the estimate already shown */ });
 }
 
 /* ---- fake retro hit counter ---- */
