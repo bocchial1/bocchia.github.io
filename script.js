@@ -649,9 +649,12 @@ function initMusic() {
     timer = setTimeout(schedule, dur * 1000);
   };
 
-  const start = () => {
+  const ensureRunning = () => {
     ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
-    if (ctx.state === "suspended") ctx.resume();
+    return ctx.resume ? ctx.resume().catch(() => {}) : Promise.resolve();
+  };
+  const beginPlayback = () => {
+    if (master || !ctx || ctx.state !== "running") return;
     master = ctx.createGain();
     master.gain.value = 0.16;
     master.connect(ctx.destination);
@@ -659,28 +662,41 @@ function initMusic() {
     i = 0;
     schedule();
   };
+  const tryPlay = () => { ensureRunning().then(() => { if (playing) beginPlayback(); }); };
   const stop = () => {
     cancelled = true;
     clearTimeout(timer);
     if (master) { try { master.disconnect(); } catch (e) {} master = null; }
   };
 
+  const setUI = (on) => {
+    icon.textContent = on ? "🎵" : "🔇";
+    label.textContent = on ? "Music: on" : "Music: off";
+    btn.classList.toggle("is-on", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  };
+
   btn.addEventListener("click", () => {
     playing = !playing;
-    if (playing) {
-      start();
-      icon.textContent = "🎵";
-      label.textContent = "Music: on";
-      btn.classList.add("is-on");
-      btn.setAttribute("aria-pressed", "true");
-    } else {
-      stop();
-      icon.textContent = "🔇";
-      label.textContent = "Music: off";
-      btn.classList.remove("is-on");
-      btn.setAttribute("aria-pressed", "false");
-    }
+    setUI(playing);
+    if (playing) tryPlay(); else stop();
   });
+
+  // Default ON: try to autostart, and if the browser blocks autoplay,
+  // kick off on the very first user interaction with the page.
+  playing = true;
+  setUI(true);
+  tryPlay();
+  const kick = () => {
+    if (!playing) return cleanup();
+    ensureRunning().then(() => {
+      if (playing) beginPlayback();
+      if (ctx && ctx.state === "running") cleanup();
+    });
+  };
+  const events = ["pointerdown", "keydown", "touchend", "scroll", "mousemove"];
+  function cleanup() { events.forEach((ev) => window.removeEventListener(ev, kick)); }
+  events.forEach((ev) => window.addEventListener(ev, kick, { passive: true }));
 }
 
 /* ---- go ---- */
