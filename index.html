@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>♥ Alex &amp; Sky's 5th Anniversary Date ♥</title>
+  <meta name="description" content="A super cute Y2K-style agenda for Alex and Sky's 5th anniversary date!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Comic+Neue:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%96%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <!-- floating hearts background -->
+  <div class="floaties" aria-hidden="true"></div>
+
+  <!-- Y2K marquee at the very top -->
+  <div class="top-marquee" aria-hidden="true">
+    <div class="top-marquee__track">
+      ✿ welcome 2 our anniversary page ✿ &nbsp; ♥ happy 5 years Alex + Sky ♥ &nbsp; ✰ best viewed with a smile ✰ &nbsp; ☆ u r the cutest ☆ &nbsp; 🐶 don't forget Twiggy 🐶 &nbsp;
+      ✿ welcome 2 our anniversary page ✿ &nbsp; ♥ happy 5 years Alex + Sky ♥ &nbsp; ✰ best viewed with a smile ✰ &nbsp; ☆ u r the cutest ☆ &nbsp; 🐶 don't forget Twiggy 🐶 &nbsp;
+    </div>
+  </div>
+
+  <main class="desktop">
+    <!-- XP-style window -->
+    <section class="window" role="region" aria-label="Anniversary agenda window">
+      <div class="window__titlebar">
+        <div class="window__title">
+          <span class="window__icon" aria-hidden="true">💖</span>
+          <span>AnniversaryDate.exe — Alex &amp; Sky</span>
+        </div>
+        <div class="window__buttons" aria-hidden="true">
+          <button class="winbtn winbtn--min" title="Minimize" type="button">_</button>
+          <button class="winbtn winbtn--max" title="Maximize" type="button">▢</button>
+          <button class="winbtn winbtn--close" title="Close" type="button">✕</button>
+        </div>
+      </div>
+
+      <div class="window__menubar" aria-hidden="true">
+        <span>File</span><span>Edit</span><span>View</span><span>Love</span><span>Help</span>
+      </div>
+
+      <div class="window__body">
+        <!-- Hero -->
+        <header class="hero">
+          <p class="hero__kicker">✧･ﾟ: *✧ you are cordially invited to ✧*:･ﾟ✧</p>
+          <h1 class="bubble-title">
+            <span class="bubble bubble--blue">Alex</span>
+            <span class="amp">&amp;</span>
+            <span class="bubble bubble--pink">Sky</span>
+          </h1>
+          <h2 class="hero__sub">★ 5th Anniversary Date ★</h2>
+
+          <div class="participants">
+            <span class="chip chip--blue">💙 Alex</span>
+            <span class="chip chip--pink">💗 Sky</span>
+            <span class="chip chip--dog">🐶 Twiggy <small>(partial attendance!)</small></span>
+          </div>
+
+          <!-- Countdown -->
+          <div class="countdown" id="countdown" aria-live="polite">
+            <div class="countdown__label">♥ the date kicks off at 3:00 PM ♥</div>
+            <div class="countdown__clock" id="clock">
+              <span class="time-now" id="timeNow">--:--:--</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Itinerary timeline -->
+        <h3 class="section-heading">⌚ Today's Itinerary ⌚</h3>
+        <ol class="timeline" id="timeline"></ol>
+
+        <!-- guestbook-y footer -->
+        <footer class="footer">
+          <div class="footer__hearts">♡ ♥ ♡ ♥ ♡</div>
+          <p>Made with <span class="beat">💖</span> for 5 wonderful years.</p>
+          <p class="footer__small">© 2026 Alex &amp; Sky &nbsp;•&nbsp; sealed with a kiss 💋</p>
+          <div class="badges" aria-hidden="true">
+            <span class="badge">Best viewed in <b>love</b> 800x600</span>
+            <span class="badge badge--blink">★ NEW ★</span>
+            <span class="badge">Twiggy approved 🐾</span>
+          </div>
+        </footer>
+      </div>
+
+      <div class="window__statusbar" aria-hidden="true">
+        <span id="statusText">Ready ♥</span>
+        <span class="window__statusright">Items: 9 &nbsp;|&nbsp; 💙💗</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- XP-ish taskbar -->
+  <div class="taskbar" aria-hidden="true">
+    <button class="start-btn" id="startBtn" type="button"><span class="start-logo">♥</span> Start</button>
+    <div class="taskbar__task">💖 AnniversaryDate.exe</div>
+    <div class="taskbar__tray">
+      <span class="tray-clock" id="trayClock">--:--</span>
+    </div>
+  </div>
+
+  <!-- tiny start menu easter egg -->
+  <div class="start-menu" id="startMenu" hidden>
+    <div class="start-menu__header">♥ Alex &amp; Sky ♥</div>
+    <ul>
+      <li>📅 Today's Date</li>
+      <li>🍝 Dinner Reservation</li>
+      <li>🏺 Pottery Class</li>
+      <li>🐶 Twiggy Cam</li>
+      <li class="start-menu__sep"></li>
+      <li>💤 Log Off (never)</li>
+    </ul>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
