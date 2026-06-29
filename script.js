@@ -584,6 +584,70 @@ function initPlaylist() {
   if (link) link.href = SPOTIFY.shareUrl || `https://open.spotify.com/playlist/${id}`;
 }
 
+/* ---- weather sneak peek (Open-Meteo, no API key) ---- */
+function initWeather() {
+  const iconEl = document.getElementById("wxIcon");
+  const tempEl = document.getElementById("wxTemp");
+  const condEl = document.getElementById("wxCond");
+  const dressEl = document.getElementById("wxDress");
+  if (!tempEl) return;
+
+  const DATE = "2026-06-30"; // Royal Oak, MI
+  const url =
+    "https://api.open-meteo.com/v1/forecast?latitude=42.4895&longitude=-83.1446" +
+    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+    `&temperature_unit=fahrenheit&timezone=America%2FDetroit&start_date=${DATE}&end_date=${DATE}`;
+
+  const codeInfo = (c) => {
+    if (c === 0) return ["☀️", "Clear & sunny"];
+    if (c === 1) return ["🌤️", "Mostly sunny"];
+    if (c === 2) return ["⛅", "Partly cloudy"];
+    if (c === 3) return ["☁️", "Overcast"];
+    if (c === 45 || c === 48) return ["🌫️", "Foggy"];
+    if (c >= 51 && c <= 57) return ["🌦️", "Light drizzle"];
+    if (c >= 61 && c <= 67) return ["🌧️", "Rainy"];
+    if (c >= 71 && c <= 77) return ["🌨️", "Snowy"];
+    if (c >= 80 && c <= 82) return ["🌦️", "Rain showers"];
+    if (c >= 95) return ["⛈️", "Thunderstorms"];
+    return ["🌤️", "Pleasant"];
+  };
+
+  const dressCode = (hi, pop) => {
+    let s =
+      "<b>👗 Dress code:</b> cute-casual you won't mind getting a little clay on for " +
+      "pottery 🏺, comfy closed-toe shoes for Twiggy's walk 🐾, and a light layer to " +
+      "dress up for your romantic Italian dinner 🍝.";
+    if (hi >= 82) s += " It'll be warm — go breezy and breathable. 😎";
+    else if (hi >= 68) s += " Mild and lovely — a light layer is perfect. 💕";
+    else s += " A bit cool — bring a cozy layer for the evening. 🧥";
+    if (pop >= 40) s += " Decent rain chance — pack a cute umbrella ☂️.";
+    return s;
+  };
+
+  const render = (hi, lo, pop, icon, cond) => {
+    if (iconEl) iconEl.textContent = icon;
+    if (tempEl) tempEl.textContent = `${Math.round(hi)}° / ${Math.round(lo)}°F`;
+    if (condEl) condEl.textContent = `${cond} · ${Math.round(pop)}% chance of rain`;
+    if (dressEl) dressEl.innerHTML = dressCode(hi, pop);
+  };
+
+  // graceful fallback (typical late-June Royal Oak)
+  const fallback = () => render(82, 63, 20, "⛅", "Partly cloudy (seasonal estimate)");
+
+  fetch(url, { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then((d) => {
+      const day = d && d.daily;
+      if (!day || !day.time || !day.time.length) return fallback();
+      const hi = day.temperature_2m_max[0];
+      const lo = day.temperature_2m_min[0];
+      const pop = day.precipitation_probability_max ? day.precipitation_probability_max[0] : 0;
+      const [icon, cond] = codeInfo(day.weather_code[0]);
+      render(hi, lo, pop == null ? 0 : pop, icon, cond);
+    })
+    .catch(fallback);
+}
+
 /* ---- fake retro hit counter ---- */
 function initHitCounter() {
   const el = document.getElementById("hitCounter");
@@ -710,6 +774,7 @@ document.addEventListener("DOMContentLoaded", () => {
   wireRequestModal();
   initCarousel();
   initPlaylist();
+  initWeather();
   initHitCounter();
   initMusic();
 });

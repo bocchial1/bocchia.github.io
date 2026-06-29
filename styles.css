@@ -228,30 +228,60 @@ body {
 .chip--pink { background: linear-gradient(180deg, var(--sky-pink), var(--sky-pink-deep)); }
 .chip--dog  { background: linear-gradient(180deg, #ffd479, #f0a830); color: #5a3d00; }
 
-/* ---------- countdown / clock ---------- */
-.countdown {
+/* ---------- weather sneak peek ---------- */
+.weather {
   display: inline-block;
+  max-width: 420px;
   margin-top: 6px;
-  padding: 12px 22px;
+  padding: 14px 22px 16px;
+  text-align: center;
   background: linear-gradient(180deg, #ffffff, #eef6ff);
   border: 2px dashed var(--alex-blue);
-  border-radius: 16px;
+  border-radius: 18px;
   box-shadow: 0 4px 12px rgba(58,160,255,0.18);
 }
-.countdown__label {
-  font-family: var(--bubble-font);
-  font-weight: 700;
-  color: var(--sky-pink-deep);
-  margin-bottom: 4px;
-}
-.countdown__clock { font-size: 14px; color: var(--ink); }
-.time-now {
+.weather__head {
   font-family: var(--bubble-font);
   font-weight: 800;
-  font-size: 22px;
-  color: var(--xp-blue);
-  letter-spacing: 1px;
+  font-size: 18px;
+  color: var(--sky-pink-deep);
 }
+.weather__where {
+  font-family: var(--bubble-font);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--xp-blue);
+  margin-top: 2px;
+}
+.weather__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 6px 0 2px;
+}
+.weather__icon { font-size: 40px; line-height: 1; }
+.weather__temp {
+  font-family: var(--bubble-font);
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--alex-blue-deep);
+}
+.weather__cond {
+  font-family: var(--bubble-font);
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 15px;
+}
+.weather__dress {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dotted var(--sky-pink);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #4a456b;
+}
+.weather__dress b { color: var(--sky-pink-deep); }
 
 /* ---------- section heading ---------- */
 .section-heading {
