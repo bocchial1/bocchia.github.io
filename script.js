@@ -243,10 +243,40 @@ async function fetchManifest() {
   }
 }
 
+function baseName(s) {
+  return String(s).split("?")[0].split("/").pop().toLowerCase();
+}
+
+/* Merge manifest (custom captions/order) with the auto folder listing.
+   - Manifest entries come first, in the order listed.
+   - A manifest entry matching a folder file overrides that file's caption.
+   - Any folder images not mentioned in the manifest still appear after. */
+function mergePhotos(folder, manifest) {
+  const byName = new Map(folder.map((f) => [baseName(f.src), f]));
+  const used = new Set();
+  const out = [];
+  manifest.forEach((m) => {
+    const isUrl = /^https?:/i.test(m.src);
+    const bn = baseName(m.src);
+    if (!isUrl && byName.has(bn)) {
+      out.push({ src: byName.get(bn).src, caption: m.caption || byName.get(bn).caption });
+      used.add(bn);
+    } else {
+      out.push({ src: m.src, caption: m.caption || captionFromName(m.src) });
+      if (!isUrl) used.add(bn);
+    }
+  });
+  folder.forEach((f) => {
+    if (!used.has(baseName(f.src))) out.push(f);
+  });
+  return out;
+}
+
 async function resolvePhotos() {
-  const fromGithub = await fetchGithubPhotos();
-  if (fromGithub && fromGithub.length) return fromGithub;
-  const fromManifest = await fetchManifest();
+  const [fromGithub, fromManifest] = await Promise.all([fetchGithubPhotos(), fetchManifest()]);
+  if (fromGithub && fromGithub.length) {
+    return fromManifest && fromManifest.length ? mergePhotos(fromGithub, fromManifest) : fromGithub;
+  }
   if (fromManifest && fromManifest.length) return fromManifest;
   return Array.isArray(PHOTOS) ? PHOTOS.filter((p) => p && (p.src || p.placeholder)) : [];
 }

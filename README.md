@@ -52,11 +52,13 @@ the page reads the folder contents through the GitHub API, so whatever is in
 
 See [`photos/README.md`](photos/README.md) for full details.
 
-The carousel loads photos in this order of preference:
+How photos are loaded:
 
-1. Images found in the `photos/` folder (auto-detected on the live site).
-2. An optional `photos/manifest.json` list.
-3. The `PHOTOS` fallback array in `script.js`.
+1. Images found in the `photos/` folder (auto-detected on the live site) —
+   **merged with** `photos/manifest.json`, which lets you set custom captions
+   and ordering for specific photos (manifest photos come first).
+2. If the folder listing isn't available, `photos/manifest.json` alone.
+3. The `PHOTOS` fallback array in `script.js` (CSS-only sample slides).
 
 It auto-plays, supports prev/next buttons, dots, swipe on mobile, and pauses
 on hover. If an image fails to load, it shows a friendly message.
