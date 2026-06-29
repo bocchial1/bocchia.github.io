@@ -250,11 +250,15 @@ async function fetchManifest() {
     const data = await res.json();
     const arr = Array.isArray(data) ? data : data && data.photos;
     if (!Array.isArray(arr) || !arr.length) return null;
-    return arr.map((p) =>
-      typeof p === "string"
-        ? { src: p.includes("/") || /^https?:/.test(p) ? p : `${GALLERY_CONFIG.folder}/${p}`, caption: captionFromName(p) }
-        : { src: p.src, caption: p.caption || captionFromName(p.src) }
-    ).filter((p) => p.src);
+    const resolveSrc = (raw) =>
+      !raw ? "" : raw.includes("/") || /^https?:/i.test(raw) ? raw : `${GALLERY_CONFIG.folder}/${raw}`;
+    return arr
+      .map((p) =>
+        typeof p === "string"
+          ? { src: resolveSrc(p), caption: captionFromName(p) }
+          : { src: resolveSrc(p.src), caption: p.caption || captionFromName(p.src) }
+      )
+      .filter((p) => p.src);
   } catch (e) {
     return null;
   }
